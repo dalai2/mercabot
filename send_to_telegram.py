@@ -25,13 +25,16 @@ CSV_FILE = os.getenv('CSV_FILE')
 
 # Function to initialize WebDriver with existing Chrome session
 def init_driver():
+    # Kill all Chrome processes to ensure no conflicts (Mac)
+    os.system("pkill -f 'Google Chrome'")
+
     # Configure Chrome options
     chrome_options = Options()
     chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument("--user-data-dir=/Users/sandrajimenez/Library/Application Support/Google/Chrome")
+    chrome_options.add_argument("--user-data-dir=/Users/YourUsername/Library/Application Support/Google/Chrome")
     chrome_options.add_argument('--profile-directory=Default')
     chrome_options.add_argument("--start-maximized")
 
