@@ -11,9 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from telegram import Bot
-
 from dotenv import load_dotenv
-import os
+import pickle
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
@@ -24,19 +23,19 @@ TELEGRAM_CHANNEL_ID = os.getenv('TELEGRAM_CHANNEL_ID')
 CSV_FILE = os.getenv('CSV_FILE')
 
 def save_cookies(driver, filename='cookies.pkl'):
-    import pickle
     cookies = driver.get_cookies()
     with open(filename, 'wb') as file:
         pickle.dump(cookies, file)
 
 def load_cookies(driver, filename='cookies.pkl'):
-    import pickle
     driver.get('https://www.mercadolibre.com.mx')  # Load initial page
-    with open(filename, 'rb') as file:
-        cookies = pickle.load(file)
-        for cookie in cookies:
-            driver.add_cookie(cookie)
-
+    if os.path.exists(filename):
+        with open(filename, 'rb') as file:
+            cookies = pickle.load(file)
+            for cookie in cookies:
+                driver.add_cookie(cookie)
+    else:
+        print("Cookie file not found. Starting fresh session.")
 
 # Function to initialize WebDriver with existing Chrome session
 def init_driver():
@@ -151,7 +150,6 @@ async def send_to_telegram():
 def save_session(driver):
     save_cookies(driver)
 
-
 # Main function to execute the tasks
 async def main():
     driver = init_driver()
@@ -161,7 +159,6 @@ async def main():
     # Save session
     save_cookies(driver)
     driver.quit()
-
 
 if __name__ == "__main__":
     asyncio.run(main())
