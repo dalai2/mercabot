@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-# from telegram import Bot
+from telegram import Bot
 
 from dotenv import load_dotenv
 import os
@@ -34,8 +34,8 @@ def init_driver():
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument(f"--user-data-dir={os.path.expanduser('~/Library/Application Support/Google/Chrome')}")
-    chrome_options.add_argument('--profile-directory=Profile 4')
+    chrome_options.add_argument(f"--user-data-dir={os.path.expanduser('~/Library/Application\ Support/Google/Chrome')}")
+    chrome_options.add_argument('--profile-directory=Default')
     chrome_options.add_argument("--start-maximized")
 
     # Initialize WebDriver with ChromeDriver manager
@@ -113,21 +113,21 @@ async def generate_affiliate_links(driver):
 
     df.to_csv(CSV_FILE, index=False, encoding='utf-8-sig')
 
-# # Function to send messages to Telegram
-# async def send_to_telegram():
-#     # bot = Bot(token=TELEGRAM_BOT_TOKEN)
-#     df = pd.read_csv(CSV_FILE)
-#     df = df[df['Affiliate Link'].str.startswith('https://mercadolibre.com')]  # Filter valid affiliate links
-#     df = df.sort_values(by='Discount', ascending=False)  # Sort by discount in descending order
+# Function to send messages to Telegram
+async def send_to_telegram():
+    # bot = Bot(token=TELEGRAM_BOT_TOKEN)
+    df = pd.read_csv(CSV_FILE)
+    df = df[df['Affiliate Link'].str.startswith('https://mercadolibre.com')]  # Filter valid affiliate links
+    df = df.sort_values(by='Discount', ascending=False)  # Sort by discount in descending order
 
-#     for _, row in df.iterrows():
-#         message = f"🌟 ¡Oferta del día! 🌟\n\n" \
-#                   f"🛒 {row['Title']}\n" \
-#                   f"💰 Descuento: {row['Discount']}\n" \
-#                   f"🔗 {row['Affiliate Link']}\n" \
-#                   f"¡Aprovecha antes de que se acabe! 🎉🛍️"
-#         # await bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=message)
-#         await asyncio.sleep(3600)  # Rate limit to avoid spamming
+    for _, row in df.iterrows():
+        message = f"🌟 ¡Oferta del día! 🌟\n\n" \
+                  f"🛒 {row['Title']}\n" \
+                  f"💰 Descuento: {row['Discount']}\n" \
+                  f"🔗 {row['Affiliate Link']}\n" \
+                  f"¡Aprovecha antes de que se acabe! 🎉🛍️"
+        await bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=message)
+        await asyncio.sleep(3600)  # Rate limit to avoid spamming
 
 # Main function to execute the tasks
 async def main():
