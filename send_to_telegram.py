@@ -23,6 +23,21 @@ TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHANNEL_ID = os.getenv('TELEGRAM_CHANNEL_ID')
 CSV_FILE = os.getenv('CSV_FILE')
 
+def save_cookies(driver, filename='cookies.pkl'):
+    import pickle
+    cookies = driver.get_cookies()
+    with open(filename, 'wb') as file:
+        pickle.dump(cookies, file)
+
+def load_cookies(driver, filename='cookies.pkl'):
+    import pickle
+    driver.get('https://www.mercadolibre.com.mx')  # Load initial page
+    with open(filename, 'rb') as file:
+        cookies = pickle.load(file)
+        for cookie in cookies:
+            driver.add_cookie(cookie)
+
+
 # Function to initialize WebDriver with existing Chrome session
 def init_driver():
     # Kill all Chrome processes to ensure no conflicts (Mac)
@@ -34,12 +49,16 @@ def init_driver():
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument(f"--user-data-dir=~/Library/Application Support/Google/Chrome")
+    chrome_options.add_argument(f"--user-data-dir={os.path.expanduser('~/Library/Application Support/Google/Chrome')}")
     chrome_options.add_argument('--profile-directory=Default')
     chrome_options.add_argument("--start-maximized")
 
     # Initialize WebDriver with ChromeDriver manager
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    # Load cookies
+    load_cookies(driver)
+
     return driver
 
 # Function to scrape product data and save to CSV
@@ -129,13 +148,20 @@ async def send_to_telegram():
         await bot.send_message(chat_id=TELEGRAM_CHANNEL_ID, text=message)
         await asyncio.sleep(3600)  # Rate limit to avoid spamming
 
+def save_session(driver):
+    save_cookies(driver)
+
+
 # Main function to execute the tasks
 async def main():
     driver = init_driver()
     scrape_products(driver)
     await generate_affiliate_links(driver)
-    # await send_to_telegram()
+    await send_to_telegram()
+    # Save session
+    save_cookies(driver)
     driver.quit()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
