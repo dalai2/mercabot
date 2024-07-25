@@ -34,7 +34,7 @@ def init_driver():
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument(f"--user-data-dir={os.path.expanduser('~/Library/Application\ Support/Google/Chrome')}")
+    chrome_options.add_argument(f"--user-data-dir={os.path.expanduser('~/Library/Application{chr(92)} Support/Google/Chrome')}")
     chrome_options.add_argument('--profile-directory=Default')
     chrome_options.add_argument("--start-maximized")
 
@@ -115,7 +115,7 @@ async def generate_affiliate_links(driver):
 
 # Function to send messages to Telegram
 async def send_to_telegram():
-    # bot = Bot(token=TELEGRAM_BOT_TOKEN)
+    bot = Bot(token=TELEGRAM_BOT_TOKEN)
     df = pd.read_csv(CSV_FILE)
     df = df[df['Affiliate Link'].str.startswith('https://mercadolibre.com')]  # Filter valid affiliate links
     df = df.sort_values(by='Discount', ascending=False)  # Sort by discount in descending order
