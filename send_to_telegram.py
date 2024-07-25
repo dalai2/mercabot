@@ -46,7 +46,7 @@ def init_driver():
     
     # Set the Firefox profile path
     options.add_argument("-profile")
-    options.add_argument("/Users/isaac/Library/Application Support/Firefox/Profiles/79cmko4o.default-release-1")
+    options.add_argument("/Users/sandrajimenez/Library/Application Support/Firefox/Profiles/79cmko4o.default-release-1")
 
     # Initialize WebDriver with geckodriver
     driver = webdriver.Firefox(service=Service('/opt/homebrew/bin/geckodriver'), options=options)
