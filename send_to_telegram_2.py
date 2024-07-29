@@ -49,7 +49,7 @@ def init_driver():
     options.add_argument("/Users/isaac/Library/Application Support/Firefox/Profiles/ae15a4ti.default-release")
 
     # Initialize WebDriver with geckodriver
-    driver = webdriver.Firefox(service=Service('/opt/homebrew/bin/geckodriver'), options=options)
+    driver = webdriver.Firefox(service=Service('/usr/local/bin/geckodriver'), options=options)
 
     # Load cookies
     load_cookies(driver)
