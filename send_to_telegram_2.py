@@ -148,7 +148,7 @@ async def send_to_telegram():
         message = f"🌟 ¡Oferta del día! 🌟\n\n" \
                   f"🔥 {row['Title']}\n" \
                   f"💰 Descuento: {row['Discount']}\n" \
-                  f"💸 De ${previous_price} a solo ${price} \n" \
+                  f"💸 De {previous_price} a solo {price} \n" \
                   f"🔗 {row['Affiliate Link']}\n" \
                   f"¡Aprovecha antes de que se acabe! 🎉🛍️"
         payload = {
