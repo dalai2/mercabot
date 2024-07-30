@@ -142,9 +142,9 @@ async def send_to_telegram():
     df = df.sort_values(by='Discount', ascending=False)  # Sort by discount in descending order
 
     interval = math.floor((12 * 60 * 60) / len(df))  # Calculate the interval in seconds for a 12-hour period
-    price = row['Price'].strip().replace('\n', '')
-    previous_price = row['Previous Price'].strip().replace('\n', '')
     for _, row in df.iterrows():
+        price = row['Price'].strip().replace('\n', '')
+        previous_price = row['Previous Price'].strip().replace('\n', '')
         message = f"🌟 ¡Oferta del día! 🌟\n\n" \
                   f"🔥 {row['Title']}\n" \
                   f"💰 Descuento: {row['Discount']}\n" \
