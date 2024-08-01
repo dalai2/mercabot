@@ -83,6 +83,8 @@ def scrape_products(driver, pages=['https://www.mercadolibre.com.mx/ofertas', 'h
             products.append([title, discount, price, previous_price, link])
 
     df = pd.DataFrame(products, columns=['Title', 'Discount', 'Price', 'Previous Price', 'Link'])
+    # Drop duplicates based on the `Title` column, keeping the first occurrence
+    df.drop_duplicates(subset=['Title'], keep='first', inplace=True)
     df.to_csv(CSV_FILE, index=False, encoding='utf-8-sig')
 
 # Function to generate affiliate links
