@@ -12,15 +12,14 @@ cat << EOF > $PLIST_FILE
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>-c</string>
-        <string>source ~/Desktop/mercabot/venv/bin/activate && /usr/bin/python3 /Users/isaac/Desktop/mercabot/send_to_telegram_2.py</string>
+        <string>/Users/isaac/Desktop/run_mercabot.sh</string>
     </array>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
-        <integer>10</integer>
+        <integer>11</integer>
         <key>Minute</key>
-        <integer>50</integer>
+        <integer>0</integer>
     </dict>
     <key>RunAtLoad</key>
     <true/>
