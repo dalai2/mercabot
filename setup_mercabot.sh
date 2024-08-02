@@ -1,7 +1,5 @@
-#!/bin/bash
-
 # Define the path for the plist file
-PLIST_FILE=~/Library/LaunchAgents/com.isaac.mercabot.plist
+PLIST_FILE=~/Library/LaunchAgents/com.sandrajimenez.mercabot.plist
 
 # Create the plist content
 cat << EOF > $PLIST_FILE
@@ -10,7 +8,7 @@ cat << EOF > $PLIST_FILE
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.isaac.mercabot</string>
+    <string>com.sandrajimenez.mercabot</string>
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
@@ -20,17 +18,22 @@ cat << EOF > $PLIST_FILE
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
-        <integer>9</integer>
+        <integer>10</integer>
         <key>Minute</key>
-        <integer>0</integer>
+        <integer>50</integer>
     </dict>
     <key>RunAtLoad</key>
     <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/com.sandrajimenez.mercabot.out</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/com.sandrajimenez.mercabot.err</string>
 </dict>
 </plist>
 EOF
 
 # Load the plist file into launchd
+launchctl unload $PLIST_FILE 2>/dev/null
 launchctl load $PLIST_FILE
 
 echo "Plist file created and loaded successfully."
