@@ -12,7 +12,7 @@ cat << EOF > $PLIST_FILE
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/isaac/Desktop/run_mercabot.sh</string>
+        <string>/Users/isaac/Desktop/mercabot/run_mercabot.sh</string>
     </array>
     <key>StartCalendarInterval</key>
     <dict>
