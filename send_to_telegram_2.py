@@ -9,6 +9,8 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+
 from dotenv import load_dotenv
 import math
 import requests
@@ -61,31 +63,44 @@ def scrape_products(driver, pages=['https://www.mercadolibre.com.mx/ofertas', 'h
     products = []
     for page in pages:
         driver.get(page)
-        time.sleep(20)  # Wait for page to load
+        
+        # Wait until promotion items are loaded
+        try:
+            WebDriverWait(driver, 20).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.promotion-item'))
+            )
+        except TimeoutException:
+            print(f"Timed out waiting for page {page} to load")
+            continue
 
         elements = driver.find_elements(By.CSS_SELECTOR, '.promotion-item')
 
         for element in elements:
-            title = element.find_element(By.CSS_SELECTOR, '.promotion-item__title').text
-            discount = element.find_element(By.CSS_SELECTOR, '.promotion-item__discount-text').text
+            try:
+                title = element.find_element(By.CSS_SELECTOR, '.promotion-item__title').text
+                discount = element.find_element(By.CSS_SELECTOR, '.promotion-item__discount-text').text
+                
+                # Extract and clean price
+                price_element = element.find_element(By.CSS_SELECTOR, '.andes-money-amount--cents-superscript')
+                price = price_element.text.split(' ')[-1]  # Get numeric part only
+
+                # Extract and clean previous price
+                previous_price_element = element.find_element(By.CSS_SELECTOR, '.andes-money-amount--previous')
+                previous_price = previous_price_element.text.split(' ')[-1]  # Get numeric part only
+
+                # Extract link
+                link = element.find_element(By.CSS_SELECTOR, '.promotion-item__link-container').get_attribute('href')
+                
+                products.append([title, discount, price, previous_price, link])
             
-            # Extract and clean price
-            price_element = element.find_element(By.CSS_SELECTOR, '.andes-money-amount--cents-superscript')
-            price = price_element.text.split(' ')[-1]  # Get numeric part only
-
-            # Extract and clean previous price
-            previous_price_element = element.find_element(By.CSS_SELECTOR, '.andes-money-amount--previous')
-            previous_price = previous_price_element.text.split(' ')[-1]  # Get numeric part only
-
-            # Extract link
-            link = element.find_element(By.CSS_SELECTOR, '.promotion-item__link-container').get_attribute('href')
-
-            products.append([title, discount, price, previous_price, link])
+            except NoSuchElementException:
+                # If any of the elements are not found, skip to the next promotion item
+                continue
 
     df = pd.DataFrame(products, columns=['Title', 'Discount', 'Price', 'Previous Price', 'Link'])
     # Drop duplicates based on the `Title` column, keeping the first occurrence
     df.drop_duplicates(subset=['Title'], keep='first', inplace=True)
-    df.to_csv(CSV_FILE, index=False, encoding='utf-8-sig')
+    df.to_csv('products.csv', index=False, encoding='utf-8-sig')
 
 # Function to generate affiliate links
 async def generate_affiliate_links(driver):
