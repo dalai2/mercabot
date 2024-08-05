@@ -95,6 +95,7 @@ def scrape_products(driver, pages=['https://www.mercadolibre.com.mx/ofertas', 'h
             
             except NoSuchElementException:
                 # If any of the elements are not found, skip to the next promotion item
+                print(f"Element not found on page {page} for element {element.text}")
                 continue
 
     df = pd.DataFrame(products, columns=['Title', 'Discount', 'Price', 'Previous Price', 'Link'])
