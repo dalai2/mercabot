@@ -61,7 +61,7 @@ def scrape_products(driver, pages=['https://www.mercadolibre.com.mx/ofertas', 'h
     products = []
     for page in pages:
         driver.get(page)
-        time.sleep(5)  # Wait for page to load
+        time.sleep(20)  # Wait for page to load
 
         elements = driver.find_elements(By.CSS_SELECTOR, '.promotion-item')
 
